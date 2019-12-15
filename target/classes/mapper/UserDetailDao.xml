@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.env.miniprogram.dao.UserDetailDao">
+
+	<sql id="sql_field">
+		<![CDATA[
+			user_id,detail_date,weight,weight_unit,body_fat,create_time,update_time
+		]]>
+	</sql>
+	<sql id="tableName">
+		t_user_change_info
+	</sql>
+	<sql id="select_sql_tpl">
+		SELECT id,
+		<include refid="sql_field"/>
+		FROM
+		<include refid="tableName"/>
+	</sql>
+
+	<insert id="insertUserDetail">
+		INSERT INTO
+		<include refid="tableName"/>
+		(<include refid="sql_field"/>)
+		VALUES
+		(#{userDetailInfo.userId},#{userDetailInfo.detailDate},#{userDetailInfo.weight},#{userDetailInfo.weightUnit},#{userDetailInfo.bodyFat},now(),now())
+	</insert>
+
+	<update id="updateUserDetail">
+		update
+		<include refid="tableName"/>
+		SET
+		update_time = now(),
+		<if test="userDetailInfo.weight != null and userDetailInfo.weight != 0"   > weight = #{userDetailInfo
+		.weight},</if>
+		<if test="userDetailInfo.weightUnit != null"   > weight_unit = #{userDetailInfo.weightUnit},</if>
+		<if test="userDetailInfo.bodyFat != null and userDetailInfo.bodyFat != 0"   > body_fat =
+			#{userDetailInfo.bodyFat},</if>
+		update_time = now()
+		WHERE
+		user_id = #{userDetailInfo.userId}
+		and detail_date = #{userDetailInfo.detailDate}
+	</update>
+
+	<delete id="deleteUserDetail">
+		delete from
+		<include refid="tableName"/>
+		where
+		id = #{id}
+	</delete>
+
+	<select id="queryUserDetailInfoByUserId" resultType="UserDetailInfo">
+		<include refid="select_sql_tpl"></include>
+		where user_id = #{userId}
+		and detail_date > #{beginTime}
+	</select>
+</mapper>

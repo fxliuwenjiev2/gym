@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.env.miniprogram.dao.ActionDao">
+
+	<sql id="sql_field">
+		<![CDATA[
+			action_name,action_type,groups,group_times,weight,weight_unit,rest_time,common,create_time,update_time
+		]]>
+	</sql>
+	<sql id="tableName">
+		t_action
+	</sql>
+	<sql id="select_sql_tpl">
+		SELECT id,
+		<include refid="sql_field"/>
+		FROM
+		<include refid="tableName"/>
+	</sql>
+
+	<insert id="insertAction">
+		INSERT INTO
+		<include refid="tableName"/>
+		(<include refid="sql_field"/>)
+		VALUES (#{action.actionName}, #{action.actionType},#{action.groups},#{action.groupTimes},#{action.weight},
+				#{action.weightUnit},#{action.restTime},#{action.common},now(),now())
+	</insert>
+
+	<update id="updateAction">
+		update
+		<include refid="tableName"/>
+		SET
+		action_name = #{action.actionName},
+		action_type = #{action.actionType},
+		groups = #{action.groups},
+		group_times = #{action.groupTimes},
+		weight = #{action.weight},
+		weight_unit = #{action.weightUnit},
+		rest_time = #{action.restTime},
+		common = #{action.common},
+		update_time = now()
+		WHERE
+		id = #{action.id}
+	</update>
+
+	<delete id="deleteAction">
+		delete from
+		<include refid="tableName"/>
+		where
+		id = #{id}
+	</delete>
+
+	<select id="queryActionByIds" resultType="Action">
+		<include refid="select_sql_tpl"></include>
+		where id in
+		<foreach collection="ids" item="id"  open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+
+
+
+</mapper>

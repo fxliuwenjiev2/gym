@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.env.miniprogram.dao.GymDao">
+
+	<sql id="sql_field">
+		<![CDATA[
+			gym_name,gym_address,create_time,update_time
+		]]>
+	</sql>
+	<sql id="tableName">
+		t_gym
+	</sql>
+	<sql id="select_sql_tpl">
+		SELECT id,
+		<include refid="sql_field"/>
+		FROM
+		<include refid="tableName"/>
+	</sql>
+
+	<insert id="insertGym">
+		INSERT INTO
+		<include refid="tableName"/>
+		(<include refid="sql_field"/>)
+		VALUES
+		(#{gym.gymName},#{gym.gymAddress},now(),now())
+	</insert>
+
+	<update id="updateGym">
+		update
+		<include refid="tableName"/>
+		SET
+		update_time = now(),
+		<if test="gym.gymName != null"   > gym_name = #{gym.gymName},</if>
+		<if test="gym.gymAddress != null"   > gym_address = #{gym.gymAddress},</if>
+		update_time = now()
+		WHERE
+		id = #{gym.id}
+	</update>
+
+	<delete id="deleteGym">
+		delete from
+		<include refid="tableName"/>
+		where
+		id = #{id}
+	</delete>
+</mapper>
